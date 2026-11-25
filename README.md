@@ -27,6 +27,23 @@ npm install
 npx openspec --version
 ```
 
+## Ejecutar la aplicación
+
+La aplicación es un frontend en React + Vite (sin backend).
+
+```sh
+npm install
+npm run dev       # abre http://localhost:5173
+```
+
+Otros comandos:
+
+| Comando | Qué hace |
+| --- | --- |
+| `npm test` | Ejecuta las pruebas (Vitest + Testing Library) |
+| `npm run build` | Genera la versión de producción en `dist/` |
+| `npm run preview` | Sirve localmente la versión de `dist/` |
+
 ## ¿Qué incluye?
 
 | Archivo / carpeta | Para qué sirve |

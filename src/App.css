@@ -1,0 +1,231 @@
+/* Color base elegido por el desarrollador: rojo */
+:root {
+  --color-primary: #dc2626;
+  --color-primary-dark: #b91c1c;
+  --color-primary-darker: #7f1d1d;
+  --color-primary-light: #fee2e2;
+  --color-primary-lighter: #fef2f2;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-surface: #ffffff;
+  --radius: 12px;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  background: linear-gradient(160deg, var(--color-primary-lighter), var(--color-primary-light));
+  min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  border-top: 6px solid var(--color-primary);
+  box-shadow: 0 10px 30px rgba(127, 29, 29, 0.12);
+  padding: 32px 24px;
+}
+
+.app__header h1 {
+  margin: 0 0 4px;
+  color: var(--color-primary-dark);
+}
+
+.app__header p {
+  margin: 0 0 24px;
+  color: var(--color-muted);
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.add-form label {
+  font-weight: 600;
+}
+
+.add-form small {
+  color: var(--color-muted);
+}
+
+.add-form__row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 2px solid var(--color-primary-light);
+  border-radius: 8px;
+  outline: none;
+}
+
+.add-form input:focus {
+  border-color: var(--color-primary);
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.button--primary {
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 12px 24px;
+}
+
+.button--primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.button--secondary {
+  background: var(--color-primary-light);
+  color: var(--color-primary-darker);
+}
+
+.button--secondary:hover {
+  background: #fecaca;
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-light);
+}
+
+.participants h2 {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+}
+
+.participants ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.participants li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-primary-lighter);
+  border: 1px solid var(--color-primary-light);
+  border-radius: 999px;
+  padding: 4px 6px 4px 12px;
+}
+
+.participants li.is-winner {
+  background: var(--color-primary);
+  border-color: var(--color-primary-dark);
+  color: #fff;
+}
+
+.remove {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.remove:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.empty,
+.hint {
+  color: var(--color-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.winner {
+  margin-top: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-darker));
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  animation: pop 0.35s ease-out;
+}
+
+.winner__title {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.winner__name {
+  margin: 8px 0 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
