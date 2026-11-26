@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addParticipants, parseNames, removeParticipant } from './participants.js';
+import { addParticipants, hasNameTooLong, parseNames, removeParticipant } from './participants.js';
 
 describe('parseNames', () => {
   it('separa por comas y saltos de línea y descarta vacíos', () => {
@@ -22,5 +22,12 @@ describe('addParticipants', () => {
 describe('removeParticipant', () => {
   it('quita solo al participante indicado', () => {
     expect(removeParticipant(['Ana', 'Pedro', 'María'], 'Pedro')).toEqual(['Ana', 'María']);
+  });
+});
+
+describe('hasNameTooLong', () => {
+  it('acepta hasta 40 caracteres y rechaza 41', () => {
+    expect(hasNameTooLong(['a'.repeat(40)])).toBe(false);
+    expect(hasNameTooLong(['Ana', 'a'.repeat(41)])).toBe(true);
   });
 });

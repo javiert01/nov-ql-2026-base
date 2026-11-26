@@ -173,4 +173,44 @@ describe('App', () => {
 
     expect(screen.queryByText('¡Tenemos un ganador!')).not.toBeInTheDocument();
   });
+
+  it('participantes / Agregar con el botón devuelve el foco', async () => {
+    const user = renderApp();
+
+    await addNames(user, 'Ana');
+
+    expect(screen.getByLabelText('Nombre del participante')).toHaveFocus();
+  });
+
+  it('participantes / Nombre de 40 caracteres', async () => {
+    const user = renderApp();
+    const name = 'a'.repeat(40);
+
+    await addNames(user, name);
+
+    expect(participantNames()).toEqual([name]);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('participantes / Un nombre demasiado largo rechaza toda la entrada', async () => {
+    const user = renderApp();
+    const text = `Ana, ${'a'.repeat(41)}, Pedro`;
+
+    await addNames(user, text);
+
+    expect(participantNames()).toEqual([]);
+    expect(screen.getByLabelText('Nombre del participante')).toHaveValue(text);
+    expect(screen.getByRole('alert')).toHaveTextContent('Cada nombre puede tener hasta 40 caracteres');
+  });
+
+  it('participantes / Editar el campo quita el mensaje', async () => {
+    const user = renderApp();
+
+    await addNames(user, 'a'.repeat(41));
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText('Nombre del participante'), '{Backspace}');
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });
