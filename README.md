@@ -27,6 +27,12 @@ npm install
 npx openspec --version
 ```
 
+## Aplicación publicada
+
+👉 **https://javiert01.github.io/nov-ql-2026-base/**
+
+Cada `push` a `main` se publica automáticamente en GitHub Pages, solo si pasan el formato, el lint, los tipos, las pruebas y la prueba end-to-end (trabajo `deploy` de `.github/workflows/ci.yml`). Los pull requests ejecutan las verificaciones pero no despliegan.
+
 ## Ejecutar la aplicación
 
 La aplicación es un frontend en React + Vite con Tailwind CSS (sin backend). Las reglas de código están en [`AGENTS.md`](AGENTS.md).
