@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addParticipants, hasNameTooLong, parseNames, removeParticipant } from './participants.js';
+import { addParticipants, hasNameTooLong, parseNames, removeParticipant } from './participants';
 
 describe('parseNames', () => {
   it('separa por comas y saltos de línea y descarta vacíos', () => {

@@ -31,8 +31,8 @@ En los eventos de la comunidad solemos entregar más de un premio. Queremos que 
 
 ## Mensajes
 
-| Situación | Mensaje |
-| --- | --- |
+| Situación                   | Mensaje                                                                     |
+| --------------------------- | --------------------------------------------------------------------------- |
 | Participantes insuficientes | `Se necesitan al menos {N + 1} participantes para sortear {N} ganador(es).` |
 
 ## Criterios de aceptación

@@ -48,7 +48,7 @@ Como en los tickets anteriores, primero crea un cambio con OpenSpec (`/openspec-
 
 ## Consideraciones
 
-- Las pruebas **no** deben esperar 3 segundos reales: usen *fake timers* o una técnica similar.
+- Las pruebas **no** deben esperar 3 segundos reales: usen _fake timers_ o una técnica similar.
 - Pueden agregar animaciones o sonido, siempre que se cumplan las reglas.
 
 ¡El objetivo es agregar una funcionalidad nueva sin romper nada de lo anterior!

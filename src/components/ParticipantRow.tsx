@@ -1,4 +1,16 @@
-export default function ParticipantRow({ position, name, isWinner, onRemove }) {
+interface ParticipantRowProps {
+  position: number;
+  name: string;
+  isWinner: boolean;
+  onRemove: (name: string) => void;
+}
+
+export default function ParticipantRow({
+  position,
+  name,
+  isWinner,
+  onRemove,
+}: ParticipantRowProps) {
   const rowColors = isWinner ? 'bg-red-600 text-white' : 'bg-white hover:bg-red-50';
   const positionColors = isWinner ? 'bg-white text-red-700' : 'bg-red-100 text-red-800';
 

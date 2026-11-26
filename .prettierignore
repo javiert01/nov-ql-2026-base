@@ -1,0 +1,7 @@
+dist
+playwright-report
+test-results
+openspec
+.agents
+.claude
+package-lock.json

@@ -1,13 +1,17 @@
-import DrawControls from './components/DrawControls.jsx';
-import Header from './components/Header.jsx';
-import ParticipantForm from './components/ParticipantForm.jsx';
-import ParticipantList from './components/ParticipantList.jsx';
-import WinnerAnnouncement from './components/WinnerAnnouncement.jsx';
-import { useParticipantDraft } from './hooks/useParticipantDraft.js';
-import { useRaffle } from './hooks/useRaffle.js';
-import { MIN_PARTICIPANTS } from './raffle/index.js';
+import DrawControls from './components/DrawControls';
+import Header from './components/Header';
+import ParticipantForm from './components/ParticipantForm';
+import ParticipantList from './components/ParticipantList';
+import WinnerAnnouncement from './components/WinnerAnnouncement';
+import { useParticipantDraft } from './hooks/useParticipantDraft';
+import { useRaffle } from './hooks/useRaffle';
+import { MIN_PARTICIPANTS, type Random } from './raffle';
 
-export default function App({ random }) {
+interface AppProps {
+  random: Random;
+}
+
+export default function App({ random }: AppProps) {
   const raffle = useRaffle(random);
   const draft = useParticipantDraft(raffle.add);
 

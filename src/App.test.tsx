@@ -1,9 +1,12 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import App from './App.jsx';
+import App from './App';
+import type { Random } from './raffle';
 
-async function addNames(user, text) {
+type User = ReturnType<typeof userEvent.setup>;
+
+async function addNames(user: User, text: string) {
   await user.type(screen.getByLabelText('Nombre del participante'), text);
   await user.click(screen.getByRole('button', { name: 'Agregar' }));
 }
@@ -13,7 +16,7 @@ function participantNames() {
   if (!list) return [];
   return within(list)
     .getAllByRole('listitem')
-    .map((item) => item.querySelector('span:not([aria-hidden])').textContent);
+    .map((item) => item.querySelector('span:not([aria-hidden])')?.textContent ?? '');
 }
 
 function rowsMarkedAsWinner() {
@@ -22,7 +25,7 @@ function rowsMarkedAsWinner() {
     .filter((item) => within(item).queryByText('Ganador'));
 }
 
-function renderApp(random = () => 0) {
+function renderApp(random: Random = () => 0) {
   const user = userEvent.setup();
   render(<App random={random} />);
   return user;
@@ -140,7 +143,7 @@ describe('App', () => {
 
   it('sorteo / Segundo sorteo: el nuevo resultado reemplaza al anterior', async () => {
     const values = [0, 0.9];
-    const user = renderApp(() => values.shift());
+    const user = renderApp(() => values.shift() ?? 0);
 
     await addNames(user, 'Ana, Pedro');
     await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
@@ -200,7 +203,9 @@ describe('App', () => {
 
     expect(participantNames()).toEqual([]);
     expect(screen.getByLabelText('Nombre del participante')).toHaveValue(text);
-    expect(screen.getByRole('alert')).toHaveTextContent('Cada nombre puede tener hasta 40 caracteres');
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Cada nombre puede tener hasta 40 caracteres',
+    );
   });
 
   it('participantes / Editar el campo quita el mensaje', async () => {

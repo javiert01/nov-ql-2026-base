@@ -27,10 +27,10 @@ Primero crea el cambio con OpenSpec (`/openspec-propose`) con el comportamiento 
 
 ### R4 — Estados de la pantalla
 
-| Situación | Qué se muestra |
-| --- | --- |
-| Cargando | `Cargando historial…` |
-| Sin sorteos | `Todavía no hay sorteos. ¡Haz el primero!` |
+| Situación         | Qué se muestra                                                |
+| ----------------- | ------------------------------------------------------------- |
+| Cargando          | `Cargando historial…`                                         |
+| Sin sorteos       | `Todavía no hay sorteos. ¡Haz el primero!`                    |
 | Error del backend | `No se pudo cargar el historial.` y un botón **"Reintentar"** |
 
 ## Criterios de aceptación

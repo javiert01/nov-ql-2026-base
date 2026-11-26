@@ -45,13 +45,13 @@ El equipo puede proponer otro diseño, siempre que lo documente en la propuesta 
 ## Buenas prácticas
 
 - **Interfaces e inyección de dependencias:** los servicios dependen de una interfaz `RepositorioDeSorteos`, no de SQLite. En las pruebas se puede inyectar otra implementación.
-- **Consultas parametrizadas:** nunca construyas SQL concatenando texto ingresado por el usuario (evita *SQL injection*).
+- **Consultas parametrizadas:** nunca construyas SQL concatenando texto ingresado por el usuario (evita _SQL injection_).
 - **Transacciones:** las operaciones que escriben en varias tablas usan una transacción.
 - **Restricciones en la base de datos:** claves foráneas, `NOT NULL` y `UNIQUE` donde corresponda; no confíes solo en el código.
 
 ## Consideraciones
 
-- Puedes usar el driver de SQLite directamente o un ORM / *query builder* (Drizzle, Prisma, Knex, SQLAlchemy, etc.).
+- Puedes usar el driver de SQLite directamente o un ORM / _query builder_ (Drizzle, Prisma, Knex, SQLAlchemy, etc.).
 - La ruta del archivo de la base de datos se configura con una variable de entorno.
 
 ¡El objetivo es tener datos persistentes con un diseño fácil de probar!

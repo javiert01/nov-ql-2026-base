@@ -29,7 +29,7 @@ Antes de implementar, crea un cambio con OpenSpec (`/openspec-propose`) que desc
 
 ## Consideraciones
 
-- Habilita GitHub Pages en el repositorio usando **GitHub Actions** como origen (*Settings → Pages*).
+- Habilita GitHub Pages en el repositorio usando **GitHub Actions** como origen (_Settings → Pages_).
 - Algunos frameworks necesitan configurar la ruta base (`base`) para que funcionen en un subdirectorio.
 - Puedes usar `gh` para revisar las ejecuciones: `gh run list` y `gh run watch`.
 - No guardes secretos ni tokens en el código.

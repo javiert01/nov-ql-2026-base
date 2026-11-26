@@ -10,11 +10,11 @@ Primero crea el cambio con OpenSpec (`/openspec-propose`) con los endpoints, las
 
 ## Endpoints
 
-| Método | Ruta | Descripción | Respuesta exitosa |
-| --- | --- | --- | --- |
-| `POST` | `/api/sorteos` | Guarda un sorteo | `201 Created` + el sorteo guardado |
-| `GET` | `/api/sorteos` | Lista los sorteos, del más reciente al más antiguo | `200 OK` + lista paginada |
-| `GET` | `/api/sorteos/{id}` | Obtiene el detalle de un sorteo | `200 OK` + el sorteo |
+| Método | Ruta                | Descripción                                        | Respuesta exitosa                  |
+| ------ | ------------------- | -------------------------------------------------- | ---------------------------------- |
+| `POST` | `/api/sorteos`      | Guarda un sorteo                                   | `201 Created` + el sorteo guardado |
+| `GET`  | `/api/sorteos`      | Lista los sorteos, del más reciente al más antiguo | `200 OK` + lista paginada          |
+| `GET`  | `/api/sorteos/{id}` | Obtiene el detalle de un sorteo                    | `200 OK` + el sorteo               |
 
 ### `POST /api/sorteos`
 
@@ -60,14 +60,19 @@ El backend **no confía** en el frontend. Una petición es inválida si:
 Todos los errores usan el mismo formato:
 
 ```json
-{ "error": { "codigo": "GANADOR_NO_PARTICIPA", "mensaje": "«Carlos» no está en la lista de participantes." } }
+{
+  "error": {
+    "codigo": "GANADOR_NO_PARTICIPA",
+    "mensaje": "«Carlos» no está en la lista de participantes."
+  }
+}
 ```
 
-| Situación | Código HTTP |
-| --- | --- |
-| Petición inválida | `400 Bad Request` |
-| Sorteo no encontrado | `404 Not Found` |
-| Error inesperado | `500 Internal Server Error` (sin detalles internos) |
+| Situación            | Código HTTP                                         |
+| -------------------- | --------------------------------------------------- |
+| Petición inválida    | `400 Bad Request`                                   |
+| Sorteo no encontrado | `404 Not Found`                                     |
+| Error inesperado     | `500 Internal Server Error` (sin detalles internos) |
 
 ## Criterios de aceptación
 
@@ -81,7 +86,7 @@ Todos los errores usan el mismo formato:
 
 - **Códigos HTTP correctos:** `201` al crear, `400` para datos inválidos, `404` si no existe. No respondas `200` con un error dentro.
 - **Validar en el borde:** valida la petición antes de que llegue al servicio, idealmente a partir del esquema OpenAPI.
-- **No filtrar detalles internos:** los errores `500` no muestran *stack traces* ni consultas SQL.
+- **No filtrar detalles internos:** los errores `500` no muestran _stack traces_ ni consultas SQL.
 - **Paginar las listas:** nunca devuelvas una tabla completa sin límite.
 - **El documento OpenAPI es el contrato:** si cambia la API, cambia Swagger en el mismo commit.
 

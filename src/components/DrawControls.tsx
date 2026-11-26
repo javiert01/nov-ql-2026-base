@@ -1,4 +1,18 @@
-export default function DrawControls({ canDraw, showReset, minParticipants, onDraw, onReset }) {
+interface DrawControlsProps {
+  canDraw: boolean;
+  showReset: boolean;
+  minParticipants: number;
+  onDraw: () => void;
+  onReset: () => void;
+}
+
+export default function DrawControls({
+  canDraw,
+  showReset,
+  minParticipants,
+  onDraw,
+  onReset,
+}: DrawControlsProps) {
   return (
     <div className="mt-6">
       <div className="flex gap-3">

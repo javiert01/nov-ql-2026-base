@@ -40,9 +40,9 @@ Primero crea el cambio con OpenSpec (`/openspec-propose`) con el comportamiento 
 ## Buenas prácticas
 
 - **Un cliente del API:** las llamadas HTTP viven en un módulo `apiDeSorteos`, no repartidas por los componentes.
-- **Inyección de dependencias:** los componentes reciben el cliente del API; en las pruebas se reemplaza por uno falso (*mock* o *stub*).
+- **Inyección de dependencias:** los componentes reciben el cliente del API; en las pruebas se reemplaza por uno falso (_mock_ o _stub_).
 - **CORS:** el backend permite solo el origen del frontend, configurado por variable de entorno; no uses `*`.
-- **Tiempo de espera:** la petición tiene un *timeout*; la interfaz no se queda esperando para siempre.
+- **Tiempo de espera:** la petición tiene un _timeout_; la interfaz no se queda esperando para siempre.
 
 ## Ejemplo
 

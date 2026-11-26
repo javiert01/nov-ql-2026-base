@@ -20,8 +20,8 @@ Este ticket se construye **sobre la aplicación del Reto #1** (`instrucciones/ta
   - **Diseño del código:** principios y patrones que se deben seguir.
   - **Lo que la IA no debe hacer.**
 - Cada regla es **concreta y verificable** (ver ejemplos abajo).
-- El agente que usa el equipo lee el archivo (ver *Consideraciones*).
-- El código actual cumple las reglas de `AGENTS.md`: la IA lo refactoriza para aplicarlas (ver *Flujo de trabajo*).
+- El agente que usa el equipo lee el archivo (ver _Consideraciones_).
+- El código actual cumple las reglas de `AGENTS.md`: la IA lo refactoriza para aplicarlas (ver _Flujo de trabajo_).
 - El refactor **no cambia el comportamiento**: la aplicación funciona igual que al terminar el Reto #1.
 - El equipo revisa el resultado y confirma que cada regla se cumple.
 
@@ -46,14 +46,17 @@ Estas son ideas para inspirarse; elijan, cambien o agreguen las suyas:
 # AGENTS.md
 
 ## Proyecto
+
 Selector de ganadores para sorteos. Solo frontend, con Vite + TypeScript.
 
 ## Comandos
+
 - Instalar: `npm install`
 - Ejecutar: `npm run dev`
 - Pruebas: `npm test`
 
 ## Reglas
+
 - Todo cambio incluye pruebas.
 - La lógica del sorteo vive en `src/sorteo/` y no importa nada de la UI.
 - El generador aleatorio se inyecta; nunca se llama a `Math.random()` directamente.

@@ -2,9 +2,9 @@
 
 ## Descripción
 
-En el Reto #1 le pedimos a la IA lo que queríamos y aceptamos lo que generó. A partir de ahora vamos a trabajar con **especificaciones**: primero acordamos *qué* se va a construir y después le pedimos a la IA que lo implemente.
+En el Reto #1 le pedimos a la IA lo que queríamos y aceptamos lo que generó. A partir de ahora vamos a trabajar con **especificaciones**: primero acordamos _qué_ se va a construir y después le pedimos a la IA que lo implemente.
 
-Para eso vamos a usar [**OpenSpec**](https://github.com/Fission-AI/OpenSpec), una herramienta de *spec driven development* que guarda las especificaciones junto al código y se integra con agentes como OpenCode, Claude Code, Codex y GitHub Copilot.
+Para eso vamos a usar [**OpenSpec**](https://github.com/Fission-AI/OpenSpec), una herramienta de _spec driven development_ que guarda las especificaciones junto al código y se integra con agentes como OpenCode, Claude Code, Codex y GitHub Copilot.
 
 El proyecto base **ya incluye OpenSpec** instalado y configurado para OpenCode, Claude Code, Codex y GitHub Copilot, con las especificaciones en español.
 

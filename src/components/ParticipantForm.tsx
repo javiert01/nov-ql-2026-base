@@ -1,11 +1,23 @@
-import { useRef } from 'react';
+import { useRef, type FormEvent } from 'react';
 
 const ERROR_ID = 'participant-name-error';
 
-export default function ParticipantForm({ value, error, onChange, onSubmit }) {
-  const inputRef = useRef(null);
+interface ParticipantFormProps {
+  value: string;
+  error: string | null;
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+}
 
-  function handleSubmit(event) {
+export default function ParticipantForm({
+  value,
+  error,
+  onChange,
+  onSubmit,
+}: ParticipantFormProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit();
     inputRef.current?.focus();

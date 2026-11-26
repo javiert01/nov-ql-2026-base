@@ -1,8 +1,9 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { useRaffle } from './useRaffle.js';
+import type { Random } from '../raffle';
+import { useRaffle } from './useRaffle';
 
-function setup(random = () => 0) {
+function setup(random: Random = () => 0) {
   const { result } = renderHook(() => useRaffle(random));
   act(() => result.current.add(['Ana', 'Pedro', 'María']));
   return result;

@@ -1,6 +1,12 @@
-import ParticipantRow from './ParticipantRow.jsx';
+import ParticipantRow from './ParticipantRow';
 
-export default function ParticipantList({ participants, winner, onRemove }) {
+interface ParticipantListProps {
+  participants: readonly string[];
+  winner: string | null;
+  onRemove: (name: string) => void;
+}
+
+export default function ParticipantList({ participants, winner, onRemove }: ParticipantListProps) {
   return (
     <section aria-labelledby="participants-title">
       <h2 id="participants-title" className="mb-3 flex items-center gap-2 text-lg font-bold">

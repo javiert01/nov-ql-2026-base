@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canDraw, pickWinner } from './pickWinner.js';
+import { canDraw, pickWinner } from './pickWinner';
 
 const participants = ['Ana', 'Pedro', 'María', 'Luis', 'Sofía'];
 

@@ -8,7 +8,7 @@ El usuario debe poder ingresar los nombres de los participantes y ejecutar el so
 
 El objetivo es construir una primera versión funcional y sencilla del selector de ganadores.
 
-Parte del **proyecto base del dojo**: un proyecto de Node.js casi vacío, con `AGENTS.md` (vacío) y OpenSpec ya configurados. En este reto no los uses todavía: pídele a la IA que genere la aplicación y acepta lo que proponga (*vibe coding*).
+Parte del **proyecto base del dojo**: un proyecto de Node.js casi vacío, con `AGENTS.md` (vacío) y OpenSpec ya configurados. En este reto no los uses todavía: pídele a la IA que genere la aplicación y acepta lo que proponga (_vibe coding_).
 
 Puedes utilizar cualquier framework o herramienta de inteligencia artificial que consideres conveniente para desarrollar el frontend, siempre dentro del proyecto base. No es necesario implementar un backend.
 

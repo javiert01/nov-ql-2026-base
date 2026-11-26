@@ -1,4 +1,8 @@
-export default function WinnerAnnouncement({ winner }) {
+interface WinnerAnnouncementProps {
+  winner: string;
+}
+
+export default function WinnerAnnouncement({ winner }: WinnerAnnouncementProps) {
   return (
     <section
       role="status"

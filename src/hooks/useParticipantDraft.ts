@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MAX_NAME_LENGTH, hasNameTooLong, parseNames } from '../raffle/index.js';
+import { MAX_NAME_LENGTH, hasNameTooLong, parseNames } from '../raffle';
 
 export const NAME_TOO_LONG_MESSAGE = `Cada nombre puede tener hasta ${MAX_NAME_LENGTH} caracteres`;
 
@@ -7,11 +7,11 @@ export const NAME_TOO_LONG_MESSAGE = `Cada nombre puede tener hasta ${MAX_NAME_L
  * Texto del campo de participantes y su mensaje de error.
  * `submit` entrega los nombres válidos a `onAdd` y limpia el campo.
  */
-export function useParticipantDraft(onAdd) {
+export function useParticipantDraft(onAdd: (names: string[]) => void) {
   const [draft, setDraft] = useState('');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  function change(value) {
+  function change(value: string) {
     setDraft(value);
     setError(null);
   }
