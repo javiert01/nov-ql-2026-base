@@ -2,10 +2,12 @@ import DrawControls from './components/DrawControls';
 import Header from './components/Header';
 import ParticipantForm from './components/ParticipantForm';
 import ParticipantList from './components/ParticipantList';
+import Podium from './components/Podium';
 import WinnerAnnouncement from './components/WinnerAnnouncement';
+import WinnerCountSelector from './components/WinnerCountSelector';
 import { useParticipantDraft } from './hooks/useParticipantDraft';
 import { useRaffle } from './hooks/useRaffle';
-import { MIN_PARTICIPANTS, type Random } from './raffle';
+import type { Random } from './raffle';
 
 interface AppProps {
   random: Random;
@@ -32,17 +34,20 @@ export default function App({ random }: AppProps) {
         />
         <ParticipantList
           participants={raffle.participants}
-          winner={raffle.winner}
+          winners={raffle.winners}
           onRemove={raffle.remove}
         />
+        <WinnerCountSelector value={raffle.winnerCount} onChange={raffle.setWinnerCount} />
         <DrawControls
           canDraw={raffle.canDraw}
           showReset={raffle.participants.length > 0}
-          minParticipants={MIN_PARTICIPANTS}
+          winnerCount={raffle.winnerCount}
+          minParticipants={raffle.minParticipants}
           onDraw={raffle.draw}
           onReset={handleReset}
         />
-        {raffle.winner && <WinnerAnnouncement winner={raffle.winner} />}
+        {raffle.winners.length === 1 && <WinnerAnnouncement winner={raffle.winners[0]} />}
+        {raffle.winners.length > 1 && <Podium winners={raffle.winners} />}
       </main>
     </div>
   );

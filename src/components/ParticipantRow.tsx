@@ -1,16 +1,13 @@
 interface ParticipantRowProps {
   position: number;
   name: string;
-  isWinner: boolean;
+  /** Etiqueta del resultado («Ganador» o medalla y lugar); `null` si no ganó. */
+  badge: string | null;
   onRemove: (name: string) => void;
 }
 
-export default function ParticipantRow({
-  position,
-  name,
-  isWinner,
-  onRemove,
-}: ParticipantRowProps) {
+export default function ParticipantRow({ position, name, badge, onRemove }: ParticipantRowProps) {
+  const isWinner = badge !== null;
   const rowColors = isWinner ? 'bg-red-600 text-white' : 'bg-white hover:bg-red-50';
   const positionColors = isWinner ? 'bg-white text-red-700' : 'bg-red-100 text-red-800';
 
@@ -23,9 +20,9 @@ export default function ParticipantRow({
         {position}
       </span>
       <span className="flex-1 truncate font-medium">{name}</span>
-      {isWinner && (
+      {badge && (
         <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold tracking-wide uppercase">
-          Ganador
+          {badge}
         </span>
       )}
       <button

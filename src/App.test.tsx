@@ -11,8 +11,15 @@ async function addNames(user: User, text: string) {
   await user.click(screen.getByRole('button', { name: 'Agregar' }));
 }
 
+/** La lista de participantes (el podio también es una lista). */
+function participantRows() {
+  const section = screen.getByRole('region', { name: /^Participantes/ });
+  const list = within(section).queryByRole('list');
+  return list ? within(list).getAllByRole('listitem') : [];
+}
+
 function participantNames() {
-  const list = screen.queryByRole('list');
+  const list = within(screen.getByRole('region', { name: /^Participantes/ })).queryByRole('list');
   if (!list) return [];
   return within(list)
     .getAllByRole('listitem')
@@ -20,9 +27,7 @@ function participantNames() {
 }
 
 function rowsMarkedAsWinner() {
-  return within(screen.getByRole('list'))
-    .getAllByRole('listitem')
-    .filter((item) => within(item).queryByText('Ganador'));
+  return participantRows().filter((item) => within(item).queryByText('Ganador'));
 }
 
 function renderApp(random: Random = () => 0) {
@@ -132,7 +137,7 @@ describe('App', () => {
 
   it('sorteo / Sin participantes y Dos participantes: el mensaje de mínimo aparece y desaparece', async () => {
     const user = renderApp();
-    const message = 'Agrega al menos 2 participantes para sortear.';
+    const message = 'Se necesitan al menos 2 participantes para sortear 1 ganador.';
 
     expect(screen.getByText(message)).toBeInTheDocument();
     await addNames(user, 'Ana');
@@ -164,7 +169,7 @@ describe('App', () => {
 
     expect(screen.queryByText('Todavía no hay participantes.')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /^Participantes\s*2$/ })).toBeInTheDocument();
-    const rows = within(screen.getByRole('list')).getAllByRole('listitem');
+    const rows = participantRows();
     expect(rows[0]).toHaveTextContent(/^1Ana/);
     expect(rows[1]).toHaveTextContent(/^2Pedro/);
   });
@@ -217,5 +222,93 @@ describe('App', () => {
     await user.type(screen.getByLabelText('Nombre del participante'), '{Backspace}');
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('sorteo / Valor por defecto y Elegir tres ganadores', async () => {
+    const user = renderApp();
+    const group = screen.getByRole('group', { name: 'Cantidad de ganadores' });
+
+    expect(within(group).getByRole('button', { name: '1' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(within(group).getByRole('button', { name: '3' }));
+    expect(within(group).getByRole('button', { name: '3' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(within(group).getByRole('button', { name: '1' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('sorteo / Tres ganadores con tres participantes', async () => {
+    const user = renderApp();
+
+    await addNames(user, 'Ana, Pedro, María');
+    await user.click(screen.getByRole('button', { name: '3' }));
+
+    expect(screen.getByRole('button', { name: 'Sortear ganador' })).toBeDisabled();
+    expect(
+      screen.getByText('Se necesitan al menos 4 participantes para sortear 3 ganadores.'),
+    ).toBeInTheDocument();
+
+    await addNames(user, 'Luis');
+    expect(screen.getByRole('button', { name: 'Sortear ganador' })).toBeEnabled();
+  });
+
+  it('interfaz / Podio de tres: 2.º a la izquierda, 1.º al centro, 3.º a la derecha', async () => {
+    // 0.5 elige a María (1.º); 0.25 a Ana (2.º) y 0.5 a Luis (3.º) entre los que quedan.
+    const values = [0.5, 0.25, 0.5];
+    const user = renderApp(() => values.shift() ?? 0);
+
+    await addNames(user, 'Ana, Pedro, María, Luis, Sofía');
+    await user.click(screen.getByRole('button', { name: '3' }));
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    const podium = screen.getByRole('status');
+    expect(podium).toHaveTextContent('¡Tenemos un podio!');
+    expect(podium).not.toHaveTextContent('¡Tenemos un ganador!');
+    const columns = within(podium).getAllByRole('listitem');
+    expect(columns.map((column) => column.textContent)).toEqual([
+      expect.stringContaining('Ana'),
+      expect.stringContaining('María'),
+      expect.stringContaining('Luis'),
+    ]);
+    expect(columns[0]).toHaveTextContent('🥈');
+    expect(columns[1]).toHaveTextContent('🥇');
+    expect(columns[2]).toHaveTextContent('🥉');
+  });
+
+  it('interfaz / Podio de dos: sin 3.er lugar', async () => {
+    const user = renderApp(() => 0);
+
+    await addNames(user, 'Pedro, Sofía, Ana');
+    await user.click(screen.getByRole('button', { name: '2' }));
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    const columns = within(screen.getByRole('status')).getAllByRole('listitem');
+    expect(columns).toHaveLength(2);
+    expect(columns[0]).toHaveTextContent(/🥈.*Sofía/);
+    expect(columns[1]).toHaveTextContent(/🥇.*Pedro/);
+    expect(screen.getByRole('status')).not.toHaveTextContent('🥉');
+  });
+
+  it('interfaz / Medallas en la lista', async () => {
+    // 0.75 elige a Luis (1.º); 0.9 elige a Ana (2.º) entre los que quedan.
+    const values = [0.75, 0.9];
+    const user = renderApp(() => values.shift() ?? 0);
+
+    await addNames(user, 'Ana, Pedro, María, Luis');
+    await user.click(screen.getByRole('button', { name: '2' }));
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    const rows = participantRows();
+    const byName = (name: string) => rows.find((row) => row.textContent?.includes(name));
+    expect(byName('Luis')).toHaveTextContent('🥇 1.er lugar');
+    expect(byName('Ana')).toHaveTextContent('🥈 2.º lugar');
+    expect(byName('Pedro')).not.toHaveTextContent('lugar');
+    expect(byName('María')).not.toHaveTextContent('lugar');
   });
 });

@@ -1,6 +1,7 @@
 interface DrawControlsProps {
   canDraw: boolean;
   showReset: boolean;
+  winnerCount: number;
   minParticipants: number;
   onDraw: () => void;
   onReset: () => void;
@@ -9,12 +10,15 @@ interface DrawControlsProps {
 export default function DrawControls({
   canDraw,
   showReset,
+  winnerCount,
   minParticipants,
   onDraw,
   onReset,
 }: DrawControlsProps) {
+  const winnersText = winnerCount === 1 ? '1 ganador' : `${winnerCount} ganadores`;
+
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <div className="flex gap-3">
         <button
           type="button"
@@ -36,7 +40,7 @@ export default function DrawControls({
       </div>
       {!canDraw && (
         <p className="mt-2 text-sm text-gray-500">
-          Agrega al menos {minParticipants} participantes para sortear.
+          Se necesitan al menos {minParticipants} participantes para sortear {winnersText}.
         </p>
       )}
     </div>

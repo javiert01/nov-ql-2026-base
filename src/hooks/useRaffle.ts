@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { addParticipants, canDraw, pickWinner, removeParticipant, type Random } from '../raffle';
+import {
+  addParticipants,
+  canDraw,
+  minParticipantsFor,
+  pickWinners,
+  removeParticipant,
+  type Random,
+  type WinnerCount,
+} from '../raffle';
 
 /**
  * Estado del sorteo. Recibe el generador aleatorio desde fuera
@@ -7,34 +15,43 @@ import { addParticipants, canDraw, pickWinner, removeParticipant, type Random } 
  */
 export function useRaffle(random: Random) {
   const [participants, setParticipants] = useState<string[]>([]);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [winnerCount, setWinnerCountState] = useState<WinnerCount>(1);
+  const [winners, setWinners] = useState<string[]>([]);
 
   function add(names: string[]) {
     if (names.length === 0) return;
     setParticipants((current) => addParticipants(current, names));
-    setWinner(null);
+    setWinners([]);
   }
 
   function remove(name: string) {
     setParticipants((current) => removeParticipant(current, name));
-    setWinner(null);
+    setWinners([]);
+  }
+
+  function setWinnerCount(count: WinnerCount) {
+    setWinnerCountState(count);
+    setWinners([]);
   }
 
   function draw() {
-    setWinner(pickWinner(participants, random));
+    setWinners(pickWinners(participants, winnerCount, random));
   }
 
   function reset() {
     setParticipants([]);
-    setWinner(null);
+    setWinners([]);
   }
 
   return {
     participants,
-    winner,
-    canDraw: canDraw(participants),
+    winners,
+    winnerCount,
+    minParticipants: minParticipantsFor(winnerCount),
+    canDraw: canDraw(participants, winnerCount),
     add,
     remove,
+    setWinnerCount,
     draw,
     reset,
   };

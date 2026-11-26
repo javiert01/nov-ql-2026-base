@@ -5,5 +5,5 @@ export {
   parseNames,
   removeParticipant,
 } from './participants';
-export { MIN_PARTICIPANTS, canDraw, pickWinner } from './pickWinner';
-export type { Random } from './pickWinner';
+export { WINNER_COUNTS, canDraw, minParticipantsFor, pickWinners } from './pickWinner';
+export type { Random, WinnerCount } from './pickWinner';

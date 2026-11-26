@@ -1,12 +1,21 @@
 import ParticipantRow from './ParticipantRow';
+import { PLACES } from './places';
 
 interface ParticipantListProps {
   participants: readonly string[];
-  winner: string | null;
+  /** Ganadores ordenados por lugar; vacío si no hay resultado. */
+  winners: readonly string[];
   onRemove: (name: string) => void;
 }
 
-export default function ParticipantList({ participants, winner, onRemove }: ParticipantListProps) {
+function badgeFor(name: string, winners: readonly string[]): string | null {
+  const place = winners.indexOf(name);
+  if (place === -1) return null;
+  if (winners.length === 1) return 'Ganador';
+  return `${PLACES[place].medal} ${PLACES[place].label}`;
+}
+
+export default function ParticipantList({ participants, winners, onRemove }: ParticipantListProps) {
   return (
     <section aria-labelledby="participants-title">
       <h2 id="participants-title" className="mb-3 flex items-center gap-2 text-lg font-bold">
@@ -26,7 +35,7 @@ export default function ParticipantList({ participants, winner, onRemove }: Part
               key={name}
               position={index + 1}
               name={name}
-              isWinner={name === winner}
+              badge={badgeFor(name, winners)}
               onRemove={onRemove}
             />
           ))}
