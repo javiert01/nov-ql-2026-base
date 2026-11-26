@@ -13,7 +13,13 @@ function participantNames() {
   if (!list) return [];
   return within(list)
     .getAllByRole('listitem')
-    .map((item) => item.querySelector('span').textContent);
+    .map((item) => item.querySelector('span:not([aria-hidden])').textContent);
+}
+
+function rowsMarkedAsWinner() {
+  return within(screen.getByRole('list'))
+    .getAllByRole('listitem')
+    .filter((item) => within(item).queryByText('Ganador'));
 }
 
 function renderApp(random = () => 0) {
@@ -36,6 +42,19 @@ describe('App', () => {
     const result = screen.getByRole('status');
     expect(result).toHaveTextContent('¡Tenemos un ganador!');
     expect(result).toHaveTextContent('María');
+  });
+
+  it('marca en la lista solo la fila del ganador', async () => {
+    const user = renderApp(() => 0.5);
+
+    await addNames(user, 'Ana, Pedro, María');
+    expect(rowsMarkedAsWinner()).toHaveLength(0);
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    const marked = rowsMarkedAsWinner();
+    expect(marked).toHaveLength(1);
+    expect(marked[0]).toHaveTextContent('Pedro');
   });
 
   it('permite agregar varios nombres a la vez, ignora repetidos y limpia el campo', async () => {

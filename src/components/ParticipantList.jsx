@@ -1,4 +1,4 @@
-import ParticipantChip from './ParticipantChip.jsx';
+import ParticipantRow from './ParticipantRow.jsx';
 
 export default function ParticipantList({ participants, winner, onRemove }) {
   return (
@@ -10,18 +10,21 @@ export default function ParticipantList({ participants, winner, onRemove }) {
         </span>
       </h2>
       {participants.length === 0 ? (
-        <p className="text-gray-500">Todavía no hay participantes.</p>
+        <p className="rounded-lg border-2 border-dashed border-red-100 px-4 py-6 text-center text-gray-500">
+          Todavía no hay participantes.
+        </p>
       ) : (
-        <ul className="flex flex-wrap gap-2">
-          {participants.map((name) => (
-            <ParticipantChip
+        <ol className="max-h-80 divide-y divide-red-100 overflow-y-auto rounded-lg border border-red-100">
+          {participants.map((name, index) => (
+            <ParticipantRow
               key={name}
+              position={index + 1}
               name={name}
-              highlighted={name === winner}
+              isWinner={name === winner}
               onRemove={onRemove}
             />
           ))}
-        </ul>
+        </ol>
       )}
     </section>
   );
