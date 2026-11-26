@@ -16,10 +16,15 @@ function participantNames() {
     .map((item) => item.querySelector('span').textContent);
 }
 
+function renderApp(random = () => 0) {
+  const user = userEvent.setup();
+  render(<App random={random} />);
+  return user;
+}
+
 describe('App', () => {
   it('sortea entre los participantes y muestra al ganador', async () => {
-    const user = userEvent.setup();
-    render(<App random={() => 0.5} />);
+    const user = renderApp(() => 0.5);
 
     for (const name of ['Ana', 'Pedro', 'María', 'Luis', 'Sofía']) {
       await addNames(user, name);
@@ -33,19 +38,26 @@ describe('App', () => {
     expect(result).toHaveTextContent('María');
   });
 
-  it('permite agregar varios nombres a la vez e ignora repetidos', async () => {
-    const user = userEvent.setup();
-    render(<App />);
+  it('permite agregar varios nombres a la vez, ignora repetidos y limpia el campo', async () => {
+    const user = renderApp();
 
     await addNames(user, 'Ana, Pedro');
     await addNames(user, 'ana');
 
     expect(participantNames()).toEqual(['Ana', 'Pedro']);
+    expect(screen.getByLabelText('Nombre del participante')).toHaveValue('');
+  });
+
+  it('agregar con Enter funciona igual que el botón', async () => {
+    const user = renderApp();
+
+    await user.type(screen.getByLabelText('Nombre del participante'), 'Ana{Enter}');
+
+    expect(participantNames()).toEqual(['Ana']);
   });
 
   it('no deja sortear con menos de dos participantes', async () => {
-    const user = userEvent.setup();
-    render(<App />);
+    const user = renderApp();
     const drawButton = screen.getByRole('button', { name: 'Sortear ganador' });
 
     expect(drawButton).toBeDisabled();
@@ -56,8 +68,7 @@ describe('App', () => {
   });
 
   it('quitar a un participante lo saca del sorteo', async () => {
-    const user = userEvent.setup();
-    render(<App random={() => 0} />);
+    const user = renderApp(() => 0);
 
     await addNames(user, 'Ana, Pedro, María');
     await user.click(screen.getByRole('button', { name: 'Quitar a Ana' }));
@@ -65,5 +76,18 @@ describe('App', () => {
 
     expect(participantNames()).toEqual(['Pedro', 'María']);
     expect(screen.getByRole('status')).toHaveTextContent('Pedro');
+  });
+
+  it('reiniciar borra participantes, ganador y el texto escrito', async () => {
+    const user = renderApp();
+
+    await addNames(user, 'Ana, Pedro');
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await user.type(screen.getByLabelText('Nombre del participante'), 'Luis');
+    await user.click(screen.getByRole('button', { name: 'Reiniciar' }));
+
+    expect(participantNames()).toEqual([]);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Nombre del participante')).toHaveValue('');
   });
 });

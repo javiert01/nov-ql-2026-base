@@ -1,114 +1,47 @@
 import { useState } from 'react';
-import { addParticipants, parseNames, pickWinner } from './sorteo.js';
+import DrawControls from './components/DrawControls.jsx';
+import Header from './components/Header.jsx';
+import ParticipantForm from './components/ParticipantForm.jsx';
+import ParticipantList from './components/ParticipantList.jsx';
+import WinnerAnnouncement from './components/WinnerAnnouncement.jsx';
+import { useRaffle } from './hooks/useRaffle.js';
+import { MIN_PARTICIPANTS, parseNames } from './raffle/index.js';
 
-const MIN_PARTICIPANTS = 2;
+export default function App({ random }) {
+  const raffle = useRaffle(random);
+  const [draft, setDraft] = useState('');
 
-export default function App({ random = Math.random }) {
-  const [input, setInput] = useState('');
-  const [participants, setParticipants] = useState([]);
-  const [winner, setWinner] = useState(null);
-
-  const canDraw = participants.length >= MIN_PARTICIPANTS;
-
-  function handleAdd(event) {
-    event.preventDefault();
-    const names = parseNames(input);
+  function handleAdd() {
+    const names = parseNames(draft);
     if (names.length === 0) return;
-    setParticipants((current) => addParticipants(current, names));
-    setInput('');
-    setWinner(null);
-  }
-
-  function handleRemove(name) {
-    setParticipants((current) => current.filter((p) => p !== name));
-    setWinner(null);
-  }
-
-  function handleDraw() {
-    setWinner(pickWinner(participants, random));
+    raffle.add(names);
+    setDraft('');
   }
 
   function handleReset() {
-    setParticipants([]);
-    setWinner(null);
-    setInput('');
+    raffle.reset();
+    setDraft('');
   }
 
   return (
-    <main className="app">
-      <header className="app__header">
-        <h1>Selector de ganadores</h1>
-        <p>Agrega a los participantes y sortea un único ganador.</p>
-      </header>
-
-      <form className="add-form" onSubmit={handleAdd}>
-        <label htmlFor="participant-name">Nombre del participante</label>
-        <div className="add-form__row">
-          <input
-            id="participant-name"
-            type="text"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder="Ej.: Ana, Pedro, María"
-            autoComplete="off"
-          />
-          <button type="submit" className="button button--secondary">
-            Agregar
-          </button>
-        </div>
-        <small>Puedes agregar varios nombres separados por comas.</small>
-      </form>
-
-      <section className="participants" aria-labelledby="participants-title">
-        <h2 id="participants-title">
-          Participantes <span className="badge">{participants.length}</span>
-        </h2>
-        {participants.length === 0 ? (
-          <p className="empty">Todavía no hay participantes.</p>
-        ) : (
-          <ul>
-            {participants.map((name) => (
-              <li key={name} className={name === winner ? 'is-winner' : undefined}>
-                <span>{name}</span>
-                <button
-                  type="button"
-                  className="remove"
-                  onClick={() => handleRemove(name)}
-                  aria-label={`Quitar a ${name}`}
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <div className="actions">
-        <button
-          type="button"
-          className="button button--primary"
-          onClick={handleDraw}
-          disabled={!canDraw}
-        >
-          Sortear ganador
-        </button>
-        {participants.length > 0 && (
-          <button type="button" className="button button--ghost" onClick={handleReset}>
-            Reiniciar
-          </button>
-        )}
-      </div>
-      {!canDraw && (
-        <p className="hint">Agrega al menos {MIN_PARTICIPANTS} participantes para sortear.</p>
-      )}
-
-      {winner && (
-        <section className="winner" role="status" aria-live="polite">
-          <p className="winner__title">¡Tenemos un ganador!</p>
-          <p className="winner__name">{winner}</p>
-        </section>
-      )}
-    </main>
+    <div className="min-h-screen bg-linear-160 from-red-50 to-red-100 px-4 py-8 text-gray-800">
+      <main className="mx-auto max-w-xl rounded-xl border-t-6 border-red-600 bg-white px-6 py-8 shadow-xl shadow-red-900/10">
+        <Header />
+        <ParticipantForm value={draft} onChange={setDraft} onSubmit={handleAdd} />
+        <ParticipantList
+          participants={raffle.participants}
+          winner={raffle.winner}
+          onRemove={raffle.remove}
+        />
+        <DrawControls
+          canDraw={raffle.canDraw}
+          showReset={raffle.participants.length > 0}
+          minParticipants={MIN_PARTICIPANTS}
+          onDraw={raffle.draw}
+          onReset={handleReset}
+        />
+        {raffle.winner && <WinnerAnnouncement winner={raffle.winner} />}
+      </main>
+    </div>
   );
 }

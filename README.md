@@ -29,7 +29,7 @@ npx openspec --version
 
 ## Ejecutar la aplicación
 
-La aplicación es un frontend en React + Vite (sin backend).
+La aplicación es un frontend en React + Vite con Tailwind CSS (sin backend). Las reglas de código están en [`AGENTS.md`](AGENTS.md).
 
 ```sh
 npm install

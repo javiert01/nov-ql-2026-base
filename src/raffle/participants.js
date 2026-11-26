@@ -14,7 +14,7 @@ export function parseNames(text) {
  * (sin distinguir mayúsculas ni minúsculas).
  */
 export function addParticipants(participants, names) {
-  const seen = new Set(participants.map((p) => p.toLocaleLowerCase()));
+  const seen = new Set(participants.map((participant) => participant.toLocaleLowerCase()));
   const result = [...participants];
   for (const name of names) {
     const key = name.toLocaleLowerCase();
@@ -26,14 +26,6 @@ export function addParticipants(participants, names) {
   return result;
 }
 
-/**
- * Elige un único ganador al azar.
- * `random` devuelve un número en [0, 1); se puede inyectar para pruebas.
- */
-export function pickWinner(participants, random = Math.random) {
-  if (participants.length === 0) {
-    throw new Error('No hay participantes para sortear');
-  }
-  const index = Math.floor(random() * participants.length);
-  return participants[index];
+export function removeParticipant(participants, name) {
+  return participants.filter((participant) => participant !== name);
 }
