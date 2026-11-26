@@ -29,3 +29,9 @@ export function addParticipants(participants, names) {
 export function removeParticipant(participants, name) {
   return participants.filter((participant) => participant !== name);
 }
+
+export const MAX_NAME_LENGTH = 40;
+
+export function hasNameTooLong(names) {
+  return names.some((name) => name.length > MAX_NAME_LENGTH);
+}
