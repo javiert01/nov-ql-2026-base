@@ -12,6 +12,12 @@ Solo frontend, con React + Vite y Tailwind CSS. El color base de la interfaz es 
 - Pruebas: `npm test`
 - Compilar: `npm run build`
 
+## Especificaciones (OpenSpec)
+
+- Todo cambio nuevo se especifica primero con OpenSpec: `/openspec-propose` → revisión → `/openspec-apply-change` → `/openspec-archive-change`. No se escribe código antes de que exista la propuesta.
+- Las especificaciones vigentes viven en `openspec/specs/` (capacidades `participantes`, `sorteo`, `interfaz`) y se escriben en español.
+- Las pruebas verifican los escenarios de las especificaciones, no lo que hace el código; cada prueba nueva lleva en su descripción el nombre del escenario que cubre.
+
 ## Estructura
 
 - `src/raffle/`: lógica del sorteo (funciones puras). No importa nada de React ni de `src/components/`.
