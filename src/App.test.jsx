@@ -109,4 +109,68 @@ describe('App', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.getByLabelText('Nombre del participante')).toHaveValue('');
   });
+
+  it('participantes / Entrada sin nombres: no agrega nada y conserva el texto', async () => {
+    const user = renderApp();
+
+    await addNames(user, ' , , ');
+
+    expect(participantNames()).toEqual([]);
+    expect(screen.getByLabelText('Nombre del participante')).toHaveValue(' , , ');
+  });
+
+  it('participantes / Sin participantes no hay botón Reiniciar', async () => {
+    const user = renderApp();
+
+    expect(screen.queryByRole('button', { name: 'Reiniciar' })).not.toBeInTheDocument();
+    await addNames(user, 'Ana');
+    expect(screen.getByRole('button', { name: 'Reiniciar' })).toBeInTheDocument();
+  });
+
+  it('sorteo / Sin participantes y Dos participantes: el mensaje de mínimo aparece y desaparece', async () => {
+    const user = renderApp();
+    const message = 'Agrega al menos 2 participantes para sortear.';
+
+    expect(screen.getByText(message)).toBeInTheDocument();
+    await addNames(user, 'Ana');
+    expect(screen.getByText(message)).toBeInTheDocument();
+    await addNames(user, 'Pedro');
+    expect(screen.queryByText(message)).not.toBeInTheDocument();
+  });
+
+  it('sorteo / Segundo sorteo: el nuevo resultado reemplaza al anterior', async () => {
+    const values = [0, 0.9];
+    const user = renderApp(() => values.shift());
+
+    await addNames(user, 'Ana, Pedro');
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Ana');
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+    expect(screen.getByRole('status')).toHaveTextContent('Pedro');
+  });
+
+  it('interfaz / Lista vacía y Lista con participantes: contador y numeración', async () => {
+    const user = renderApp();
+
+    expect(screen.getByText('Todavía no hay participantes.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Participantes\s*0$/ })).toBeInTheDocument();
+
+    await addNames(user, 'Ana, Pedro');
+
+    expect(screen.queryByText('Todavía no hay participantes.')).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Participantes\s*2$/ })).toBeInTheDocument();
+    const rows = within(screen.getByRole('list')).getAllByRole('listitem');
+    expect(rows[0]).toHaveTextContent(/^1Ana/);
+    expect(rows[1]).toHaveTextContent(/^2Pedro/);
+  });
+
+  it('interfaz / Antes del sorteo no hay anuncio', async () => {
+    const user = renderApp();
+
+    await addNames(user, 'Ana, Pedro');
+
+    expect(screen.queryByText('¡Tenemos un ganador!')).not.toBeInTheDocument();
+  });
 });
