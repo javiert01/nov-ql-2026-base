@@ -28,9 +28,7 @@ export default function ParticipantRow({
       </span>
       <span className="flex-1 truncate font-medium">{name}</span>
       {badge && (
-        <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold">
-          {badge}
-        </span>
+        <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold">{badge}</span>
       )}
       <button
         type="button"
