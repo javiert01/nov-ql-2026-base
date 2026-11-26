@@ -1,3 +1,4 @@
+import Countdown from './components/Countdown';
 import DrawControls from './components/DrawControls';
 import Header from './components/Header';
 import ParticipantForm from './components/ParticipantForm';
@@ -31,21 +32,30 @@ export default function App({ random }: AppProps) {
           error={draft.error}
           onChange={draft.change}
           onSubmit={draft.submit}
+          disabled={raffle.isCountingDown}
         />
         <ParticipantList
           participants={raffle.participants}
           winners={raffle.winners}
           onRemove={raffle.remove}
+          disabled={raffle.isCountingDown}
         />
-        <WinnerCountSelector value={raffle.winnerCount} onChange={raffle.setWinnerCount} />
+        <WinnerCountSelector
+          value={raffle.winnerCount}
+          onChange={raffle.setWinnerCount}
+          disabled={raffle.isCountingDown}
+        />
         <DrawControls
           canDraw={raffle.canDraw}
+          insufficient={!raffle.hasEnoughParticipants}
           showReset={raffle.participants.length > 0}
+          resetDisabled={raffle.isCountingDown}
           winnerCount={raffle.winnerCount}
           minParticipants={raffle.minParticipants}
           onDraw={raffle.draw}
           onReset={handleReset}
         />
+        {raffle.countdown !== null && <Countdown value={raffle.countdown} />}
         {raffle.winners.length === 1 && <WinnerAnnouncement winner={raffle.winners[0]} />}
         {raffle.winners.length > 1 && <Podium winners={raffle.winners} />}
       </main>

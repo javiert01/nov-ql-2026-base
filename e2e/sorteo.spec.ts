@@ -30,6 +30,12 @@ test('interfaz / Botón principal en rojo y flujo de sorteo', async ({ page }) =
 
   await drawButton.click();
 
+  const timer = page.getByRole('timer', { name: 'Cuenta regresiva' });
+  await expect(timer).toHaveText('3');
+  await expect(page.getByText('¡Tenemos un ganador!')).toBeHidden();
+  await expect(timer).toHaveText('2');
+  await expect(timer).toHaveText('1');
+
   const result = page.getByRole('status');
   await expect(result).toContainText('¡Tenemos un ganador!');
   const winner = (await result.locator('p').nth(1).textContent())?.trim();

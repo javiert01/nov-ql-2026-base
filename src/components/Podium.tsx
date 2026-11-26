@@ -15,7 +15,7 @@ export default function Podium({ winners }: PodiumProps) {
     <section
       role="status"
       aria-live="polite"
-      className="mt-6 animate-pop rounded-xl bg-red-50 p-6 text-center"
+      className="mt-6 motion-safe:animate-pop rounded-xl bg-red-50 p-6 text-center"
     >
       <p className="text-lg font-semibold tracking-wide text-red-800">¡Tenemos un podio!</p>
       <ol className="mt-4 grid grid-cols-3 items-end gap-2">

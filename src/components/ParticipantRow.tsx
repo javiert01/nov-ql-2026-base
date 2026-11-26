@@ -4,9 +4,16 @@ interface ParticipantRowProps {
   /** Etiqueta del resultado («Ganador» o medalla y lugar); `null` si no ganó. */
   badge: string | null;
   onRemove: (name: string) => void;
+  disabled: boolean;
 }
 
-export default function ParticipantRow({ position, name, badge, onRemove }: ParticipantRowProps) {
+export default function ParticipantRow({
+  position,
+  name,
+  badge,
+  onRemove,
+  disabled,
+}: ParticipantRowProps) {
   const isWinner = badge !== null;
   const rowColors = isWinner ? 'bg-red-600 text-white' : 'bg-white hover:bg-red-50';
   const positionColors = isWinner ? 'bg-white text-red-700' : 'bg-red-100 text-red-800';
@@ -21,13 +28,14 @@ export default function ParticipantRow({ position, name, badge, onRemove }: Part
       </span>
       <span className="flex-1 truncate font-medium">{name}</span>
       {badge && (
-        <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold tracking-wide uppercase">
+        <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold">
           {badge}
         </span>
       )}
       <button
         type="button"
         onClick={() => onRemove(name)}
+        disabled={disabled}
         aria-label={`Quitar a ${name}`}
         className={`cursor-pointer rounded-md px-2 py-1 text-sm font-medium transition ${
           isWinner ? 'hover:bg-white/20' : 'text-gray-500 hover:bg-red-100 hover:text-red-700'

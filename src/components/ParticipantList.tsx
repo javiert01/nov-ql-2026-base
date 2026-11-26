@@ -6,6 +6,7 @@ interface ParticipantListProps {
   /** Ganadores ordenados por lugar; vacío si no hay resultado. */
   winners: readonly string[];
   onRemove: (name: string) => void;
+  disabled: boolean;
 }
 
 function badgeFor(name: string, winners: readonly string[]): string | null {
@@ -15,7 +16,12 @@ function badgeFor(name: string, winners: readonly string[]): string | null {
   return `${PLACES[place].medal} ${PLACES[place].label}`;
 }
 
-export default function ParticipantList({ participants, winners, onRemove }: ParticipantListProps) {
+export default function ParticipantList({
+  participants,
+  winners,
+  onRemove,
+  disabled,
+}: ParticipantListProps) {
   return (
     <section aria-labelledby="participants-title">
       <h2 id="participants-title" className="mb-3 flex items-center gap-2 text-lg font-bold">
@@ -37,6 +43,7 @@ export default function ParticipantList({ participants, winners, onRemove }: Par
               name={name}
               badge={badgeFor(name, winners)}
               onRemove={onRemove}
+              disabled={disabled}
             />
           ))}
         </ol>

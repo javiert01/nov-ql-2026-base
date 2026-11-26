@@ -1,6 +1,6 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import type { Random } from './raffle';
 
@@ -30,11 +30,35 @@ function rowsMarkedAsWinner() {
   return participantRows().filter((item) => within(item).queryByText('Ganador'));
 }
 
+/** Deja pasar `seconds` segundos, de uno en uno, para que cada número programe el siguiente. */
+function advanceSeconds(seconds: number) {
+  for (let i = 0; i < seconds; i++) {
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+  }
+}
+
+/** Presiona «Sortear ganador» y deja pasar la cuenta regresiva completa. */
+async function draw(user: User) {
+  await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+  advanceSeconds(3);
+}
+
 function renderApp(random: Random = () => 0) {
-  const user = userEvent.setup();
+  const user = userEvent.setup({ advanceTimers: (ms) => vi.advanceTimersByTime(ms) });
   render(<App random={random} />);
   return user;
 }
+
+beforeEach(() => {
+  // shouldAdvanceTime: Testing Library espera un setTimeout(0) real entre acciones.
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe('App', () => {
   it('sortea entre los participantes y muestra al ganador', async () => {
@@ -45,7 +69,7 @@ describe('App', () => {
     }
     expect(participantNames()).toEqual(['Ana', 'Pedro', 'María', 'Luis', 'Sofía']);
 
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     const result = screen.getByRole('status');
     expect(result).toHaveTextContent('¡Tenemos un ganador!');
@@ -58,7 +82,7 @@ describe('App', () => {
     await addNames(user, 'Ana, Pedro, María');
     expect(rowsMarkedAsWinner()).toHaveLength(0);
 
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     const marked = rowsMarkedAsWinner();
     expect(marked).toHaveLength(1);
@@ -99,7 +123,7 @@ describe('App', () => {
 
     await addNames(user, 'Ana, Pedro, María');
     await user.click(screen.getByRole('button', { name: 'Quitar a Ana' }));
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     expect(participantNames()).toEqual(['Pedro', 'María']);
     expect(screen.getByRole('status')).toHaveTextContent('Pedro');
@@ -109,7 +133,7 @@ describe('App', () => {
     const user = renderApp();
 
     await addNames(user, 'Ana, Pedro');
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
     await user.type(screen.getByLabelText('Nombre del participante'), 'Luis');
     await user.click(screen.getByRole('button', { name: 'Reiniciar' }));
 
@@ -151,10 +175,10 @@ describe('App', () => {
     const user = renderApp(() => values.shift() ?? 0);
 
     await addNames(user, 'Ana, Pedro');
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
     expect(screen.getByRole('status')).toHaveTextContent('Ana');
 
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
     expect(screen.getAllByRole('status')).toHaveLength(1);
     expect(screen.getByRole('status')).toHaveTextContent('Pedro');
   });
@@ -265,7 +289,7 @@ describe('App', () => {
 
     await addNames(user, 'Ana, Pedro, María, Luis, Sofía');
     await user.click(screen.getByRole('button', { name: '3' }));
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     const podium = screen.getByRole('status');
     expect(podium).toHaveTextContent('¡Tenemos un podio!');
@@ -286,7 +310,7 @@ describe('App', () => {
 
     await addNames(user, 'Pedro, Sofía, Ana');
     await user.click(screen.getByRole('button', { name: '2' }));
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     const columns = within(screen.getByRole('status')).getAllByRole('listitem');
     expect(columns).toHaveLength(2);
@@ -302,7 +326,7 @@ describe('App', () => {
 
     await addNames(user, 'Ana, Pedro, María, Luis');
     await user.click(screen.getByRole('button', { name: '2' }));
-    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    await draw(user);
 
     const rows = participantRows();
     const byName = (name: string) => rows.find((row) => row.textContent?.includes(name));
@@ -310,5 +334,78 @@ describe('App', () => {
     expect(byName('Ana')).toHaveTextContent('🥈 2.º lugar');
     expect(byName('Pedro')).not.toHaveTextContent('lugar');
     expect(byName('María')).not.toHaveTextContent('lugar');
+  });
+
+  it('sorteo / Cuenta completa: 3, 2, 1 y después el ganador', async () => {
+    const user = renderApp(() => 0.5);
+    await addNames(user, 'Ana, Pedro, María, Luis, Sofía');
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+    const timer = screen.getByRole('timer', { name: 'Cuenta regresiva' });
+    expect(timer).toHaveTextContent('3');
+    expect(screen.queryByText('¡Tenemos un ganador!')).not.toBeInTheDocument();
+
+    advanceSeconds(1);
+    expect(timer).toHaveTextContent('2');
+    advanceSeconds(1);
+    expect(timer).toHaveTextContent('1');
+    expect(screen.queryByText('¡Tenemos un ganador!')).not.toBeInTheDocument();
+
+    advanceSeconds(1);
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('María');
+  });
+
+  it('sorteo / Controles deshabilitados y Al terminar se desbloquea', async () => {
+    const user = renderApp();
+    await addNames(user, 'Ana, Pedro, María');
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    const locked = [
+      screen.getByRole('button', { name: 'Sortear ganador' }),
+      screen.getByLabelText('Nombre del participante'),
+      screen.getByRole('button', { name: 'Agregar' }),
+      screen.getByRole('button', { name: 'Quitar a Ana' }),
+      screen.getByRole('button', { name: '2' }),
+      screen.getByRole('button', { name: 'Reiniciar' }),
+    ];
+    for (const control of locked) expect(control).toBeDisabled();
+
+    advanceSeconds(3);
+    for (const control of locked) expect(control).toBeEnabled();
+  });
+
+  it('sorteo / Se oculta el resultado anterior', async () => {
+    const user = renderApp();
+    await addNames(user, 'Ana, Pedro');
+    await draw(user);
+    expect(screen.getByText('¡Tenemos un ganador!')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    expect(screen.queryByText('¡Tenemos un ganador!')).not.toBeInTheDocument();
+    expect(screen.getByRole('timer')).toBeInTheDocument();
+  });
+
+  it('sorteo / Participantes insuficientes: no hay cuenta regresiva', async () => {
+    const user = renderApp();
+    await addNames(user, 'Ana');
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Se necesitan al menos 2 participantes para sortear 1 ganador.'),
+    ).toBeInTheDocument();
+  });
+
+  it('sorteo / El mensaje de insuficientes no aparece durante la cuenta', async () => {
+    const user = renderApp();
+    await addNames(user, 'Ana, Pedro');
+
+    await user.click(screen.getByRole('button', { name: 'Sortear ganador' }));
+
+    expect(screen.queryByText(/Se necesitan al menos/)).not.toBeInTheDocument();
   });
 });
